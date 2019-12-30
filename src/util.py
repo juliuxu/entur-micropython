@@ -1,6 +1,16 @@
 import utime
 
 
+def parse_iso8601(s):
+    year = int(s[0:4])
+    month = int(s[5:7])
+    day = int(s[8:10])
+    hour = int(s[11:13])
+    minute = int(s[14:16])
+    second = int(s[17:19])
+    return (year, month, day, hour, minute, second)
+
+
 def cache(period_ms):
     def inner(f):
         cache_dict = {

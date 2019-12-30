@@ -1,52 +1,52 @@
 import gc
-import os
-import upip
 import machine
 import wifi
 import log
 import clock
 import config
-
-gc.collect()
-
-
-# TODO: Move to own file
-def install_dependencies():
-    log.info("install_dependencies")
-    DEPENDENCIES = []
-    for (packageName, importName) in DEPENDENCIES:
-        try:
-            os.stat('/lib/' + importName)
-        except OSError:
-            log.info("installing %s" % packageName)
-            upip.install(packageName)
+import dependencies
+import display
 
 
-log.setup()
-config.setup()
-wifi.setup()
+def boot():
+    gc.collect()
+    log.setup()
+    config.setup()
 
-# Ensure wifi
-for _ in range(50):
-    if wifi.isconnected():
-        break
-    log.blink(log.WAITING_LED)
-    machine.sleep(200)
-else:
-    log.error("could not connect to wifi")
-    log.set_error()
+    # Setup display
+    display.setup()
+    log.success("display setup")
 
-# Set time
-clock.setup()
-log.success("sat the time")
+    display.text("wifi")
+    wifi.setup()
 
-# Install dependencies
-if wifi.isconnected():
+    # Ensure wifi
+    for _ in range(50):
+        if wifi.isconnected():
+            log.success("connected to wifi")
+            break
+        log.blink(log.WAITING_LED)
+        machine.sleep(200)
+    else:
+        log.error("could not connect to wifi")
+        log.set_error()
+        return
+
+    # Set time
+    display.text("time")
+    clock.setup()
+    log.success("sat the time")
+
+    # Install dependencies
     try:
-        install_dependencies()
+        dependencies.setup()
         log.success("all dependencies are installed")
     except Exception:
         log.error("failed installing dependencies")
         log.set_error()
-else:
-    log.set_waiting()
+        return
+
+    display.text("done")
+
+
+boot()

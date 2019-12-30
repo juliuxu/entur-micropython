@@ -3,9 +3,9 @@ import machine
 
 _stream = sys.stderr
 
-SUCCESS_LED = machine.Pin(15, machine.Pin.OUT)
-ERROR_LED = machine.Pin(13, machine.Pin.OUT)
-WAITING_LED = machine.Pin(12, machine.Pin.OUT)
+SUCCESS_LED = machine.Pin(4, machine.Pin.OUT)
+ERROR_LED = machine.Pin(5, machine.Pin.OUT)
+WAITING_LED = machine.Pin(16, machine.Pin.OUT)
 
 
 def zero_leds():
@@ -43,7 +43,7 @@ def set_waiting():
 def _log(level, msg, *args):
     zero_leds()
 
-    _stream.write("[%s]: " % (level))
+    _stream.write("[%s]: \t" % (level))
     if not args:
         print(msg, file=_stream)
     else:
