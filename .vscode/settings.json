@@ -1,11 +1,23 @@
 {
     "python.linting.enabled": true,
     "python.jediEnabled": false,
-
-    // Loaded Stubs:  esp8266-micropython-1.10.0 
-    "python.autoComplete.extraPaths": [".micropy/BradenM-micropy-stubs-501c3fe/frozen", ".micropy/BradenM-micropy-stubs-dcb5d8b/frozen", ".micropy/BradenM-micropy-stubs-501c3fe/stubs", ".micropy/entur-micropython"],
-    "python.autoComplete.typeshedPaths":  [".micropy/BradenM-micropy-stubs-501c3fe/frozen", ".micropy/BradenM-micropy-stubs-dcb5d8b/frozen", ".micropy/BradenM-micropy-stubs-501c3fe/stubs", ".micropy/entur-micropython"],
-    "python.analysis.typeshedPaths":  [".micropy/BradenM-micropy-stubs-501c3fe/frozen", ".micropy/BradenM-micropy-stubs-dcb5d8b/frozen", ".micropy/BradenM-micropy-stubs-501c3fe/stubs", ".micropy/entur-micropython"],
-
+    "python.autoComplete.extraPaths": [
+        ".micropy/BradenM-micropy-stubs-501c3fe/frozen",
+        ".micropy/BradenM-micropy-stubs-dcb5d8b/frozen",
+        ".micropy/BradenM-micropy-stubs-501c3fe/stubs",
+        ".micropy/entur-micropython"
+    ],
+    "python.autoComplete.typeshedPaths": [
+        ".micropy/BradenM-micropy-stubs-501c3fe/frozen",
+        ".micropy/BradenM-micropy-stubs-dcb5d8b/frozen",
+        ".micropy/BradenM-micropy-stubs-501c3fe/stubs",
+        ".micropy/entur-micropython"
+    ],
+    "python.analysis.typeshedPaths": [
+        ".micropy/BradenM-micropy-stubs-501c3fe/frozen",
+        ".micropy/BradenM-micropy-stubs-dcb5d8b/frozen",
+        ".micropy/BradenM-micropy-stubs-501c3fe/stubs",
+        ".micropy/entur-micropython"
+    ],
     "python.linting.pylintEnabled": true
 }
