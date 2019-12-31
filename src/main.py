@@ -1,41 +1,11 @@
+import sys
 import log
 import clock
-import util
 import utime as time
 import display
 import machine
-from graphqlclient import GraphQLClient
-
-ENTUR_API = "https://api.entur.io/journey-planner/v2/graphql"
-
-# QUAY Mot Bergkrystallen: NSR:Quay:10850
-# QUAY Mot Sentrum: NSR:Quay:10851
-
-query = '''
-query Depatures($quayid: String!) {
-  quay(id: $quayid) {
-    estimatedCalls(numberOfDepartures: 2) {
-      realtime
-      expectedDepartureTime
-    }
-  }
-}
-'''
-
-debug_query = '''
-query Depatures($quayid: String!) {
-  quay(id: $quayid) {
-    name
-    estimatedCalls(numberOfDepartures: 2) {
-      realtime
-      expectedDepartureTime
-	  destinationDisplay {
-        frontText
-      }
-    }
-  }
-}
-'''
+import entur
+import config
 
 
 def get_current_time_text():
@@ -50,7 +20,7 @@ def get_current_time_text():
 
 
 def seconds_to_text(seconds):
-    if seconds < 45:
+    if seconds < 46:
         return "now"
 
     if seconds > 584:
@@ -60,28 +30,57 @@ def seconds_to_text(seconds):
     return str(int(((seconds - 45) / 60) + 1)) + "m"
 
 
-def main():
-    client = GraphQLClient(ENTUR_API)
+def action_departure():
+    # Fetch departures
+    departures = entur.get_departures()
 
-    display.text(get_current_time_text())
+    # Get first next one
+    now_seconds = clock.gettime()
+    filtered_departures = filter(lambda x: (
+        time.mktime(x + (0, 0)) -
+        now_seconds > config.get()["departure_threshold"]
+    ), departures)
+    next_departure = next(filtered_departures)
+
+    # Display the time till departure
+    diff = time.mktime(next_departure + (0, 0)) - clock.gettime()
+    next_departure_text = seconds_to_text(diff)
+    log.debug("next: %s" % next_departure_text)
+    display.text(next_departure_text)
+
+
+def action_time():
+    current_time_text = get_current_time_text()
+    log.debug("time: %s" % current_time_text)
+    display.text(current_time_text)
+
+
+STATES = {
+    "time": {
+        "f": action_time,
+        "next": "departure"
+    },
+    "departure": {
+        "f": action_departure,
+        "next": "time"
+    }
+}
+
+
+def main():
+    action_time()
     state = "time"
     while True:
-        if state == "time":
-            state = "departure"
-            result = client.execute(
-                query, variables={"quayid": "NSR:Quay:10851"})
-            expectedDepartureTime_s = result["data"]["quay"]["estimatedCalls"][0]["expectedDepartureTime"]
-            expectedDepartureTime = util.parse_iso8601(expectedDepartureTime_s)
-            log.debug(expectedDepartureTime)
-
-            departure_seconds = time.mktime(expectedDepartureTime + (0, 0))
-            diff = departure_seconds - clock.gettime()
-            display.text(seconds_to_text(diff))
-        else:
-            state = "time"
-            display.text(get_current_time_text())
-
-        machine.sleep(3000)
+        state = STATES[state]["next"]
+        log.info("state -> %s" % state)
+        try:
+            STATES[state]["f"]()
+        except Exception as e:
+            log.error("failed on state(%s) " % state)
+            log.set_error()
+            sys.print_exception(e)  # pylint: disable=no-member
+            machine.sleep(10000)
+        machine.sleep(config.get()["toggle_delay"])
 
 
 main()

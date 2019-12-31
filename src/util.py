@@ -18,9 +18,9 @@ def cache(period_ms):
             "result": None
         }
 
-        def inner2():
-            if cache_dict["result"] is None or utime.ticks_diff(utime.ticks_ms(), cache_dict["ticks_ms"]) > period_ms:
-                cache_dict["result"] = f()
+        def inner2(*args):
+            if cache_dict["ticks_ms"] is None or utime.ticks_diff(utime.ticks_ms(), cache_dict["ticks_ms"]) > period_ms:
+                cache_dict["result"] = f(*args)
                 cache_dict["ticks_ms"] = utime.ticks_ms()
             return cache_dict["result"]
         return inner2

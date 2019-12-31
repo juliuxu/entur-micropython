@@ -3,7 +3,7 @@ import urequests
 import log
 import utime as time
 from machine import RTC
-import ntptime
+import ourntptime as ntptime
 from util import cache
 
 
@@ -12,7 +12,7 @@ rtc = RTC()
 
 @cache(3600 * 1000)
 def get_offset_from_api():
-    log.debug("fetching utc_offset from worldtimeapi.org")
+    log.info("fetching utc_offset from worldtimeapi.org")
 
     response = urequests.get(
         "http://worldtimeapi.org/api/ip")
@@ -22,7 +22,6 @@ def get_offset_from_api():
         raise RuntimeError("failed fetching utc_offset")
 
     parsed = response.json()
-    log.debug(parsed)
 
     utc_offset_str = str(parsed["utc_offset"])
     sign = int(utc_offset_str[0:1] + "1")
@@ -35,6 +34,7 @@ def get_offset_from_api():
 @cache(60 * 1000)
 def settime():
     (hour_offset, minute_offset) = get_offset_from_api()
+    log.info("fetching time from ntp")
     ntptime.settime()
 
     # add offset

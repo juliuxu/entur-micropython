@@ -22,25 +22,27 @@ class GraphQLClient:
         self.useGet = useGet
         self.token = None
 
-    def execute(self, query, variables=None):
-        return self._send(query, variables)
+    def execute(self, query, variables=None, headers=None):
+        return self._send(query, variables, headers)
 
     def inject_token(self, token):
         self.token = token
 
-    def _send(self, query, variables):
+    def _send(self, query, variables, headers):
         query = shrink_query(query)
 
-        headers = {
+        inner_headers = {
             'Accept': 'application/json'
         }
+        if headers is not None:
+            inner_headers.update(headers)
 
         if self.token is not None:
             headers['Authorization'] = '{}'.format(self.token)
 
         response = post(
             self.endpoint,
-            headers=headers,
+            headers=inner_headers,
             json=dict(query=query, variables=variables))
 
         return response.json()
