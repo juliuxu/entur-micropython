@@ -4,7 +4,6 @@ import wifi
 import log
 import clock
 import config
-import dependencies
 import display
 
 
@@ -36,15 +35,6 @@ def boot():
     display.text("time")
     clock.setup()
     log.success("sat the time")
-
-    # Install dependencies
-    try:
-        dependencies.setup()
-        log.success("all dependencies are installed")
-    except Exception:
-        log.error("failed installing dependencies")
-        log.set_error()
-        return
 
     display.text("done")
 
