@@ -10,8 +10,8 @@ AP_PASSWORD = "microentur"
 def setup_ap_mode():
     wifi_interface = network.WLAN(network.AP_IF)
     wifi_interface.active(True)
-    essid = b"%s-%s" % (AP_ESSID_PREFIX,
-                        hexlify(wifi_interface.config("mac")[-3:]))
+    essid = "{}-{}".format(AP_ESSID_PREFIX,
+                           hexlify(wifi_interface.config("mac")[-3:]).decode())
     wifi_interface.config(essid=essid, authmode=network.AUTH_WPA_WPA2_PSK,
                           password=AP_PASSWORD)
 

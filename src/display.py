@@ -1,7 +1,7 @@
 # pylint: disable=global-statement
 import max7219
 from machine import Pin, SPI
-import uasyncio
+import uasyncio as asyncio
 
 display = None
 
@@ -18,7 +18,7 @@ async def scroll_text(msg, delay=25):
         d.fill(0)
         d.text(msg, 8*4 - i, 0, 1)
         d.show()
-        await uasyncio.sleep_ms(delay)  # pylint: disable=no-member
+        await asyncio.sleep_ms(delay)  # pylint: disable=no-member
 
 
 def setup():

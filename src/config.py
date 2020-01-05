@@ -7,16 +7,15 @@ CONFIG_FILE_NAME = "/config.json"
 
 _config = {}
 
-CONFIG_SCHEMA = {
-    "wifi_essid": str,
-    "wifi_password": str,
-    "toggle_delay": int,
-    "quay_id": str,
-    "departure_threshold": int
-}
-
 
 def ensure_keys(d):
+    CONFIG_SCHEMA = {
+        "wifi_essid": str,
+        "wifi_password": str,
+        "toggle_delay": int,
+        "quay_id": str,
+        "departure_threshold": int
+    }
     for (key, value) in d.items():
         if key not in CONFIG_SCHEMA:
             return False
@@ -31,7 +30,6 @@ def load():
             return json.loads(f.read())
     except OSError:
         log.error("could not open config file")
-        log.set_error()
 
 
 def save():
@@ -41,7 +39,6 @@ def save():
         return True
     except OSError:
         log.error("could not save config file")
-        log.set_error()
         return False
 
 

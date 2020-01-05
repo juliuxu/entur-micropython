@@ -24,11 +24,9 @@ def boot():
         if wifi.isconnected():
             log.success("connected to wifi")
             break
-        log.blink(log.WAITING_LED)
         machine.sleep(200)
     else:
         log.error("could not connect to wifi")
-        log.set_error()
         return
 
     # Set time

@@ -12,7 +12,7 @@ async def parse_request(reader, include_headers=True):
     headers = {}
     while True:
         line = await reader.readline()
-        if line == b"\r\n":
+        if line == "\r\n":
             break
         key, value = line.decode().split(":", 1)
         if include_headers is True or key.lower() in include_headers:

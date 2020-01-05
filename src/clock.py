@@ -7,9 +7,6 @@ import ourntptime as ntptime
 from util import cache
 
 
-rtc = RTC()
-
-
 @cache(3600 * 1000)
 def get_offset_from_api():
     log.info("fetching utc_offset from worldtimeapi.org")
@@ -23,7 +20,6 @@ def get_offset_from_api():
             raise Exception
     except Exception as e:
         log.error("failed fetching utc_offset")
-        log.set_error()
         raise e
     finally:
         response.close()
@@ -43,6 +39,7 @@ def settime():
     ntptime.settime()
 
     # add offset
+    rtc = RTC()
     (year, month, day, _, hour, minute, second, subsecond) = rtc.datetime()
     rtc.datetime((year, month, day, 0, hour + hour_offset,
                   minute + minute_offset, second, subsecond))

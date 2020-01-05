@@ -1,6 +1,7 @@
+import micropython as m
 import gc
 import sys
-import configserver
+# import configserver
 import uasyncio as asyncio
 import log
 import clock
@@ -9,26 +10,21 @@ import display
 import entur
 import config
 import wifi
-import machine
+
+gc.collect()
 
 
 def get_current_time_text():
     (_, _, _, hour, minute, _, _, _) = clock.localtime()
-    s = str(minute)
-    if minute < 10:
-        s = "0" + s
-    s = str(hour) + s
-    if hour < 10:
-        s = "0" + s
-    return s
+    return "{:02d}{:02d}".format(hour, minute)
 
 
 def seconds_to_text_min(seconds):
     if seconds < 60:
         return "now"
-    elif seconds > 60*15:
+    if seconds > 60*15:
         pass
-    return "%dm" % seconds
+    return "{}m".format(seconds)
 
 
 def seconds_to_text_45(seconds):
@@ -39,14 +35,13 @@ def seconds_to_text_45(seconds):
         # TODO: Show absolute time
         pass
 
-    return str(int(((seconds - 45) / 60) + 1)) + "m"
+    return "{}m".format(int(((seconds - 45) / 60) + 1))
 
 
 async def action_departure():
     # Fetch departures
-    log.debug("free memory")
-    log.debug(gc.mem_free())
     departures = entur.get_departures()
+    gc.collect()
 
     # Get first next one
     now_seconds = clock.gettime()
@@ -59,7 +54,7 @@ async def action_departure():
     # Display the time till departure
     diff = time.mktime(next_departure + (0, 0)) - clock.gettime()
     next_departure_text = seconds_to_text_45(diff)
-    log.debug("next: %s" % next_departure_text)
+    log.debug("next: {}".format(next_departure_text))
     display.text(next_departure_text)
 
     return "time"
@@ -67,7 +62,7 @@ async def action_departure():
 
 async def action_time():
     current_time_text = get_current_time_text()
-    log.debug("time: %s" % current_time_text)
+    log.debug("time: {}".format(current_time_text))
     display.text(current_time_text)
 
     return "departure"
@@ -76,8 +71,8 @@ async def action_time():
 async def action_checkready():
     if not wifi.isconnected():
         status = wifi.get_wifi_status()
-        await display.scroll_text("wifi(%s)" % status)
-        await display.scroll_text("ap(%s)" % wifi.get_ap_ip())
+        await display.scroll_text("wifi({})".format(status))
+        await display.scroll_text("ap({})".format(wifi.get_ap_ip()))
         return "checkready"
     if config.get("quay_id") == "":
         await display.scroll_text("quay not configured")
@@ -94,36 +89,30 @@ async def main():
     }
     state = "checkready"
     while True:
-        log.info("state -> %s" % state)
+        gc.collect()
+        log.info("state -> {}".format(state))
+        log.debug('free: {} allocated: {}'.format(
+            gc.mem_free(), gc.mem_alloc()))  # pylint: disable=no-member
+
         try:
             state = await STATES[state]()
         except Exception as e:
-            log.error("failed on state(%s) " % state)
-            log.set_error()
+            log.error("failed on state({}) ".format(state))
             sys.print_exception(e)  # pylint: disable=no-member
-            gc.collect()
             await asyncio.sleep_ms(10000)  # pylint: disable=no-member
-        # pylint: disable=no-member
-        gc.collect()
-        await asyncio.sleep_ms(config.get("toggle_delay"))
-        machine.sleep(1000)
+        await asyncio.sleep_ms(config.get("toggle_delay"))  # pylint: disable=no-member
 
 
 def async_main():
     loop = asyncio.get_event_loop()  # pylint: disable=no-member
 
-    loop.call_soon(asyncio.start_server(  # pylint: disable=no-member
-        configserver.handle_request, "0.0.0.0", 80))
+    # loop.call_soon(asyncio.start_server(  # pylint: disable=no-member
+    #     configserver.handle_request, "0.0.0.0", 80))
 
     loop.call_soon(main())
 
     loop.run_forever()
     loop.close()
-
-
-def rdep():
-    loop = asyncio.get_event_loop()  # pylint: disable=no-member
-    loop.run_until_complete(action_departure())
 
 
 if __name__ == "__main__":
