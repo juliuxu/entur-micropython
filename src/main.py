@@ -31,9 +31,9 @@ def seconds_to_text_45(seconds):
     if seconds < 46:
         return "now"
 
-    if seconds > 584:
+    # if seconds > 584:
         # TODO: Show absolute time
-        pass
+        # pass
 
     return "{}m".format(int(((seconds - 45) / 60) + 1))
 
@@ -119,7 +119,7 @@ def async_main():
 if __name__ == "__main__":
     pass
     # main()
-    async_main()
+    # async_main()
 
     gc.collect()
     m.mem_info(1)

@@ -3,14 +3,13 @@ import machine
 import wifi
 import log
 import clock
-import config
 import display
 
 
 def boot():
     gc.collect()
     log.setup()
-    config.setup()
+    # config.setup()
 
     # Setup display
     display.setup()
@@ -37,4 +36,4 @@ def boot():
     display.text("done")
 
 
-boot()
+# boot()

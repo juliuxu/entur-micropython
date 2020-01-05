@@ -5,7 +5,7 @@ import log
 
 
 @cache(30 * 1000)
-def get_departures(n=5):
+def get_departures():
     ENTUR_API = "https://api.entur.io/journey-planner/v2/graphql"
     USER_AGENT = "jark_technology - departure-iot"
     QUERY = '''
@@ -22,7 +22,7 @@ def get_departures(n=5):
         ENTUR_API,
         headers={'Accept': 'application/json',
                  "ET-Client-Name": USER_AGENT},
-        json=dict(query=QUERY, variables={"quay_id": config.get("quay_id"), "numberOfDepartures": n}))
+        json=dict(query=QUERY, variables={"quay_id": config.get("quay_id"), "numberOfDepartures": 5}))
     result = None
     try:
         result = response.json()

@@ -5,9 +5,6 @@ import log
 
 CONFIG_FILE_NAME = "/config.json"
 
-_config = {}
-
-
 # def ensure_keys(d):
 # CONFIG_SCHEMA = {
 #     "wifi_essid": str,
@@ -32,10 +29,10 @@ def load():
         log.error("could not open config file")
 
 
-def save():
+def save(new_config):
     try:
         with open(CONFIG_FILE_NAME, 'wb') as f:
-            json.dump(_config, f)
+            json.dump(new_config, f)
         return True
     except OSError:
         log.error("could not save config file")
@@ -43,18 +40,11 @@ def save():
 
 
 def get(key):
-    return _config[key]
+    return load()[key]
 
 
 def set_config(new_config):
-    global _config
     # if not ensure_keys(new_config):
     #     return False
-    _config = new_config
-    save()
+    save(new_config)
     return True
-
-
-def setup():
-    global _config
-    _config = load()

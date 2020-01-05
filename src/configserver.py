@@ -30,17 +30,17 @@ async def parse_request(reader, include_headers=True):
 
 async def handle_index(writer):
     log.info("handle_index")
-    with open("web.html", "rb") as webFile:
+    with open("web.html", "rb") as f:
         await writer.awrite("HTTP/1.0 200 OK\r\n\r\n")
-        await writer.awriteiter(webFile)
+        # await writer.awriteiter(f)
 
 
 async def handle_get_config(writer):
     log.info("handle_get_config")
-    with open("config.json", "rb") as webFile:
+    with open("config.json", "rb") as f:
         await writer.awrite("HTTP/1.0 200 OK\r\n")
         await writer.awrite("content-type: application/json; charset=utf-8\r\n\r\n")
-        await writer.awriteiter(webFile)
+        await writer.awriteiter(f)
 
 
 async def handle_set_config(body, writer):
