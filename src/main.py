@@ -1,7 +1,7 @@
 import micropython as m
 import gc
 import sys
-# import configserver
+import configserver
 import uasyncio as asyncio
 import log
 import clock
@@ -19,12 +19,12 @@ def get_current_time_text():
     return "{:02d}{:02d}".format(hour, minute)
 
 
-def seconds_to_text_min(seconds):
-    if seconds < 60:
-        return "now"
-    if seconds > 60*15:
-        pass
-    return "{}m".format(seconds)
+# def seconds_to_text_min(seconds):
+#     if seconds < 60:
+#         return "now"
+#     if seconds > 60*15:
+#         pass
+#     return "{}m".format(seconds)
 
 
 def seconds_to_text_45(seconds):
@@ -65,7 +65,7 @@ async def action_time():
     log.debug("time: {}".format(current_time_text))
     display.text(current_time_text)
 
-    return "departure"
+    return "time"
 
 
 async def action_checkready():
@@ -78,7 +78,7 @@ async def action_checkready():
         await display.scroll_text("quay not configured")
         return "checkready"
 
-    return "departure"
+    return "time"
 
 
 async def main():
@@ -93,6 +93,7 @@ async def main():
         log.info("state -> {}".format(state))
         log.debug('free: {} allocated: {}'.format(
             gc.mem_free(), gc.mem_alloc()))  # pylint: disable=no-member
+        m.mem_info()
 
         try:
             state = await STATES[state]()
@@ -106,8 +107,8 @@ async def main():
 def async_main():
     loop = asyncio.get_event_loop()  # pylint: disable=no-member
 
-    # loop.call_soon(asyncio.start_server(  # pylint: disable=no-member
-    #     configserver.handle_request, "0.0.0.0", 80))
+    loop.call_soon(asyncio.start_server(  # pylint: disable=no-member
+        configserver.handle_request, "0.0.0.0", 80))
 
     loop.call_soon(main())
 
@@ -118,7 +119,7 @@ def async_main():
 if __name__ == "__main__":
     pass
     # main()
-    # async_main()
+    async_main()
 
     gc.collect()
     m.mem_info(1)

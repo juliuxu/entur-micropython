@@ -12,7 +12,7 @@ async def parse_request(reader, include_headers=True):
     headers = {}
     while True:
         line = await reader.readline()
-        if line == "\r\n":
+        if line == b"\r\n":
             break
         key, value = line.decode().split(":", 1)
         if include_headers is True or key.lower() in include_headers:
@@ -54,7 +54,7 @@ async def handle_set_config(body, writer):
 
 async def handle_get_info(writer):
     await writer.awrite("HTTP/1.0 200 OK\r\n")
-    await writer.awrite("content-type: application/json; charset=utf-8\r\n\r\n")
+    await writer.awrite("content-type: application/json\r\n\r\n")
     # TODO
 
 

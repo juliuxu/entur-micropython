@@ -8,26 +8,26 @@ CONFIG_FILE_NAME = "/config.json"
 _config = {}
 
 
-def ensure_keys(d):
-    CONFIG_SCHEMA = {
-        "wifi_essid": str,
-        "wifi_password": str,
-        "toggle_delay": int,
-        "quay_id": str,
-        "departure_threshold": int
-    }
-    for (key, value) in d.items():
-        if key not in CONFIG_SCHEMA:
-            return False
-        if not isinstance(value, CONFIG_SCHEMA[key]):
-            return False
-    return True
+# def ensure_keys(d):
+# CONFIG_SCHEMA = {
+#     "wifi_essid": str,
+#     "wifi_password": str,
+#     "toggle_delay": int,
+#     "quay_id": str,
+#     "departure_threshold": int
+# }
+# for (key, value) in d.items():
+#     if key not in CONFIG_SCHEMA:
+#         return False
+#     if not isinstance(value, CONFIG_SCHEMA[key]):
+#         return False
+# return True
 
 
 def load():
     try:
         with open(CONFIG_FILE_NAME) as f:
-            return json.loads(f.read())
+            return json.load(f)
     except OSError:
         log.error("could not open config file")
 
@@ -48,8 +48,8 @@ def get(key):
 
 def set_config(new_config):
     global _config
-    if not ensure_keys(new_config):
-        return False
+    # if not ensure_keys(new_config):
+    #     return False
     _config = new_config
     save()
     return True
