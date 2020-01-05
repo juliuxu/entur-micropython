@@ -3,7 +3,7 @@
 # - https://github.com/prismagraphql/python-graphql-client
 # - https://github.com/micropython/micropython-lib/tree/master/urequests
 
-from urequests import post
+import urequests
 
 
 def shrink_query(query):
@@ -17,16 +17,11 @@ def shrink_query(query):
 
 
 class GraphQLClient:
-    def __init__(self, endpoint, useGet=False):
+    def __init__(self, endpoint):
         self.endpoint = endpoint
-        self.useGet = useGet
-        self.token = None
 
     def execute(self, query, variables=None, headers=None):
         return self._send(query, variables, headers)
-
-    def inject_token(self, token):
-        self.token = token
 
     def _send(self, query, variables, headers):
         query = shrink_query(query)
@@ -37,12 +32,14 @@ class GraphQLClient:
         if headers is not None:
             inner_headers.update(headers)
 
-        if self.token is not None:
-            headers['Authorization'] = '{}'.format(self.token)
-
-        response = post(
+        response = urequests.post(
             self.endpoint,
             headers=inner_headers,
             json=dict(query=query, variables=variables))
-
-        return response.json()
+        try:
+            result = response.json()
+        except Exception as e:
+            raise e
+        finally:
+            response.close()
+        return result

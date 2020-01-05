@@ -16,14 +16,19 @@ def get_offset_from_api():
 
     response = urequests.get(
         "http://worldtimeapi.org/api/ip")
-    if response.status_code != 200:
+
+    try:
+        result = response.json()
+        if response.status_code != 200:
+            raise Exception
+    except Exception as e:
         log.error("failed fetching utc_offset")
         log.set_error()
-        raise RuntimeError("failed fetching utc_offset")
+        raise e
+    finally:
+        response.close()
 
-    parsed = response.json()
-
-    utc_offset_str = str(parsed["utc_offset"])
+    utc_offset_str = str(result["utc_offset"])
     sign = int(utc_offset_str[0:1] + "1")
     hour = int(utc_offset_str[1:3])
     minute = int(utc_offset_str[4:7])

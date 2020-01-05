@@ -19,8 +19,8 @@ def boot():
     display.text("wifi")
     wifi.setup()
 
-    # Ensure wifi
-    for _ in range(50):
+    log.info("trying to connect to wifi")
+    for _ in range(25):
         if wifi.isconnected():
             log.success("connected to wifi")
             break
@@ -34,7 +34,7 @@ def boot():
     # Set time
     display.text("time")
     clock.setup()
-    log.success("sat the time")
+    log.success("time is synced")
 
     display.text("done")
 

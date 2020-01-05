@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- <link
+    href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8AJCQk/yQkJP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/0ZGRv8XFxf/////AP///wD///8A////AP///////////////+7u7v9OTk7/sbGx/11dXf9KSkr///////////+lpaX/4eHh/////wD///8A////AAAAAP8AAAD///////////+8vLz///////X19f/t7e3/gICA/5eXl////////////wAAAP8AAAD/////AKysrP8AAAD/AAAA/wAAAP+enp7/////////////////////////////////5OTk/wAAAP8AAAD/AAAA/6ysrP////8A////AP///wCurq6PlJSUzP///wD///8A////AP///wD///8A////AJSUlMyQkJDY////AP///wD///8A////AP///wD///8AAAAA/wAAAP////8A////AP///wD///8A////AP///wAAAAD/AAAA/////wD///8A////AP///wD///8AAAAA/wAAAP8AAAD/////AP///wD///8A////AP///wD///8AAAAA/wAAAP8AAAD/////AP///wD///8ACwsL/wAAAP8AAAD/lJSU2AAAAP8AAAD/cnJy/1hYWP8AAAD/AAAA/2FhYdgHBwf/AAAA/wAAAP////8A////AP///wD///8A////AP///wAAAAD/s7Oz/wAAAP8AAAD/x8fH/wAAAP////8A////AP///wD///8A////AP///wD///8A////AP///wAAAAD/AAAA/////wAAAAD/AAAA/////wAAAAD/AAAA/////wD///8A////AP///wD///8A////AP///wD///8AAAAA/wAAAP+qqqqlAAAA/wAAAP9lZWXjAAAA/wAAAP////8A////AP///wD///8A////AP///wD///8A////ALa2tv////8A9vb2UQAAAP8AAAD/////Uf///wDAwMD/////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wBcXFz/AAAA/////wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//8AAP//AADAAwAAwAMAAIABAAAAAAAA5+cAAOfnAADH4wAAgAEAAPgfAADyTwAA8A8AAPZvAAD+fwAA//8AAA=="
+    rel="icon" type="image/x-icon" /> -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🤖MicroEntur</title>
+  <style type="text/css">
+    body {
+      margin: 40px auto;
+      line-height: 1.6;
+      font-size: 18px;
+      color: #444;
+      padding: 0 10px
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2
+    }
+
+    textarea {
+      width: 100%;
+      height: 8rem;
+      font-size: 14px;
+    }
+
+    button[type=submit] {
+      font-size: 18px;
+    }
+  </style>
+  <script>
+    // @ts-check
+    const fetchConfig = () =>
+      fetch("/config")
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("couldn't get config")
+          }
+          return response
+        })
+        .then(response => response.json())
+
+    const onReboot = () => {
+      console.log("onReboot")
+      fetch("/reboot")
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("couldn't get response")
+          }
+          return response
+        })
+        .then(() => {
+          console.log("reboot started")
+        })
+    }
+
+    const onSetConfig = () => {
+      console.log("onSetConfig")
+      const newConfig = JSON.parse(document.getElementById("raw-config").value)
+      console.log("newConfig", newConfig)
+
+      fetch("/config", {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newConfig)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("couldn't get response")
+          }
+          return response
+        })
+        .then(() => {
+          console.log("config has been sat")
+        })
+      return false
+    }
+    const onMount = () => {
+      // Set config
+      fetchConfig().then(config => {
+        document.getElementById("raw-config").value = JSON.stringify(config, null, 2)
+      })
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      onMount()
+    });
+  </script>
+</head>
+
+<body>
+  <h1>MicroEntur</h1>
+  <!-- Raw -->
+  <form id="raw-form" onsubmit="return onSetConfig()">
+    <textarea spellcheck="false" name="raw-config" id="raw-config"></textarea>
+    <button type="submit">Save</button>
+  </form>
+
+  <button type="button" onclick="onReboot()">Reboot device</button>
+</body>
+
+</html>
