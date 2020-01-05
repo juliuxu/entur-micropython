@@ -119,3 +119,7 @@ if __name__ == "__main__":
     pass
     # main()
     # async_main()
+
+    gc.collect()
+    m.mem_info(1)
+    m.mem_info()
