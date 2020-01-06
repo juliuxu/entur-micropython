@@ -32,7 +32,7 @@ async def handle_index(writer):
     log.info("handle_index")
     with open("web.html", "rb") as f:
         await writer.awrite("HTTP/1.0 200 OK\r\n\r\n")
-        # await writer.awriteiter(f)
+        await writer.awriteiter(f)
 
 
 async def handle_get_config(writer):

@@ -3,5 +3,5 @@
   "wifi_password": "<your password>",
   "toggle_delay": 3000,
   "quay_id": "NSR:Quay:10851",
-  "ignore_departure_seconds": 0
+  "departure_threshold": 0
 }

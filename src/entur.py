@@ -4,7 +4,7 @@ import config
 import log
 
 
-@cache(30 * 1000)
+# @cache(30 * 1000)
 def get_departures():
     ENTUR_API = "https://api.entur.io/journey-planner/v2/graphql"
     USER_AGENT = "jark_technology - departure-iot"
