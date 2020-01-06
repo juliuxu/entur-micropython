@@ -54,7 +54,8 @@ async def action_departure():
     # Display the time till departure
     diff = time.mktime(next_departure + (0, 0)) - clock.gettime()
     next_departure_text = seconds_to_text_45(diff)
-    log.debug("next: {}".format(next_departure_text))
+    if __debug__:
+        log.debug("next: {}".format(next_departure_text))
     display.text(next_departure_text)
 
     return "time"
@@ -62,7 +63,8 @@ async def action_departure():
 
 async def action_time():
     current_time_text = get_current_time_text()
-    log.debug("time: {}".format(current_time_text))
+    if __debug__:
+        log.debug("time: {}".format(current_time_text))
     display.text(current_time_text)
 
     return "departure"
@@ -91,7 +93,7 @@ async def main():
     while True:
         gc.collect()
         log.info("state -> {}".format(state))
-        log.debug('free: {} allocated: {}'.format(
+        log.info('free: {} allocated: {}'.format(
             gc.mem_free(), gc.mem_alloc()))  # pylint: disable=no-member
         m.mem_info()
 
