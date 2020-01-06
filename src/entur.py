@@ -4,7 +4,7 @@ import config
 import log
 
 
-# @cache(30 * 1000)
+@cache(30 * 1000)
 def get_departures():
     ENTUR_API = "https://api.entur.io/journey-planner/v2/graphql"
     USER_AGENT = "jark_technology - departure-iot"
@@ -31,7 +31,8 @@ def get_departures():
     finally:
         response.close()
 
-    log.debug(result)
+    if __debug__:
+        log.debug(result)
 
     expectedDepartureTimes_s = result["data"]["quay"]["estimatedCalls"]
     expectedDepartureTimes = map(lambda x: parse_iso8601(
