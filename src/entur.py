@@ -9,13 +9,16 @@ def get_departures():
     ENTUR_API = "https://api.entur.io/journey-planner/v2/graphql"
     USER_AGENT = "jark_technology - departure-iot"
     QUERY = '''
-    query Depatures($quay_id: String!, $numberOfDepartures:Int) {
-        quay(id: $quay_id) {
-            estimatedCalls(numberOfDepartures: $numberOfDepartures) {
-                expectedDepartureTime
-            }
-        }
+query Depatures($quay_id: String!, $numberOfDepartures: Int) {
+  quay(id: $quay_id) {
+    estimatedCalls(numberOfDepartures: $numberOfDepartures) {
+      expectedDepartureTime
+      situations {
+        reportType
+      }
     }
+  }
+}
     '''
 
     response = urequests.post(
