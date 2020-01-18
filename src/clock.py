@@ -3,7 +3,7 @@ import urequests
 import log
 import utime as time
 from machine import RTC
-import ourntptime as ntptime
+import ntptime
 from util import cache
 
 
