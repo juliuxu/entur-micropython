@@ -3,7 +3,7 @@
 BUILD_DIR = ./build
 TOP_DIR = $(shell pwd)
 export PATH := $(TOP_DIR)/$(BUILD_DIR)/xtensa-lx106-elf/bin:$(PATH)
-export FROZEN_MANIFEST = $(TOP_DIR)/package/manifest_release.py
+export FROZEN_MANIFEST = $(TOP_DIR)/manifest.py
 export CODE_SRC_DIR = $(TOP_DIR)/src
 
 MAKEOPTS = "-j4"
