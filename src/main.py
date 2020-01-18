@@ -20,12 +20,12 @@ def get_current_time_text():
     return "{:02d}{:02d}".format(hour, minute)
 
 
-# def seconds_to_text_min(seconds):
-#     if seconds < 60:
-#         return "now"
-#     if seconds > 60*15:
-#         pass
-#     return "{}m".format(seconds)
+def seconds_to_text_min(seconds):
+    if seconds < 60:
+        return "now"
+    if seconds > 60*15:
+        pass
+    return "{}m".format(seconds)
 
 
 def seconds_to_text_45(seconds):

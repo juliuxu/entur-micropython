@@ -4,8 +4,7 @@ BUILD_DIR = ./build
 TOP_DIR = $(shell pwd)
 export PATH := $(TOP_DIR)/$(BUILD_DIR)/xtensa-lx106-elf/bin:$(PATH)
 export FROZEN_MANIFEST = $(TOP_DIR)/manifest.py
-export CODE_SRC_DIR = $(TOP_DIR)/src
-
+export DEBUG=0
 MAKEOPTS = "-j4"
 
 all: clean make_build_dir install compile

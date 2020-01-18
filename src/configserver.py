@@ -45,11 +45,14 @@ async def handle_get_config(writer):
 
 async def handle_set_config(body, writer):
     log.info("handle_set_config")
-    new_config = ujson.loads(body)
-    if config.set_config(new_config):
-        await writer.awrite("HTTP/1.0 204 No Content\r\n\r\n")
-    else:
-        await writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\nNot a valid config")
+    try:
+        new_config = ujson.loads(body)
+        if config.set_config(new_config):
+            await writer.awrite("HTTP/1.0 204 No Content\r\n\r\n")
+        else:
+            await writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\nInvalid config keys")
+    except Exception:
+        await writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\nInvalid json")
 
 
 async def handle_get_info(writer):

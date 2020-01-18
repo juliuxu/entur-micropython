@@ -40,6 +40,6 @@ query Depatures($quay_id: String!, $numberOfDepartures: Int) {
     estimatedCalls = result["data"]["quay"]["estimatedCalls"]
     expectedDepartureTimes = map(lambda x: (
         parse_iso8601(x["expectedDepartureTime"]),
-        any(map(lambda y: y == "incident", x))
+        any(map(lambda y: y['reportType'] == "incident", x['situations']))
     ), estimatedCalls)
     return list(expectedDepartureTimes)
