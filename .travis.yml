@@ -1,0 +1,37 @@
+# global options
+dist: xenial
+language:
+  - c
+compiler:
+  - gcc
+cache:
+  directories:
+    - "${HOME}/persist"
+env:
+  global:
+    - MAKEOPTS="-j4"
+git:
+  submodules: false
+
+# define the successive stages
+stages:
+  - name: test
+
+# define the jobs for the stages
+# order of the jobs has longest running first to optimise total time
+jobs:
+  include:
+    # esp8266 port
+    - stage: test
+      env: NAME="esp8266 port build"
+      install:
+        - gir clone https://github.com/micropython/micropython.git
+        - wget https://github.com/jepler/esp-open-sdk/releases/download/2018-06-10/xtensa-lx106-elf-standalone.tar.gz
+        - zcat xtensa-lx106-elf-standalone.tar.gz | tar x
+        - export PATH=$(pwd)/xtensa-lx106-elf/bin:$PATH
+      script:
+        - cd micropython
+        - make ${MAKEOPTS} -C mpy-cross
+        - make ${MAKEOPTS} -C ports/esp8266 submodules
+        - make ${MAKEOPTS} -C ports/esp8266
+        - make ${MAKEOPTS} -C ports/esp8266 BOARD=GENERIC_512K
