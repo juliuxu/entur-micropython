@@ -4,6 +4,7 @@ import wifi
 import log
 import clock
 import display
+import uasyncio as asyncio
 
 
 def boot():
@@ -27,6 +28,11 @@ def boot():
     else:
         log.error("could not connect to wifi")
         return
+
+    # pylint: disable=no-member
+    asyncio.get_event_loop().run_until_complete(
+        display.scroll_text("wifi({})".format(wifi.get_wifi_ip())))
+    machine.sleep(100)
 
     # Set time
     display.text("time")

@@ -25,7 +25,7 @@ query Depatures($quay_id: String!, $numberOfDepartures: Int) {
         ENTUR_API,
         headers={'Accept': 'application/json',
                  "ET-Client-Name": USER_AGENT},
-        json=dict(query=QUERY, variables={"quay_id": config.get("quay_id"), "numberOfDepartures": 5}))
+        json=dict(query=QUERY, variables={"quay_id": config.get("quay_id"), "numberOfDepartures": 3}))
     result = None
     try:
         result = response.json()
@@ -37,7 +37,9 @@ query Depatures($quay_id: String!, $numberOfDepartures: Int) {
     if __debug__:
         log.debug(result)
 
-    expectedDepartureTimes_s = result["data"]["quay"]["estimatedCalls"]
-    expectedDepartureTimes = map(lambda x: parse_iso8601(
-        x["expectedDepartureTime"]), expectedDepartureTimes_s)
+    estimatedCalls = result["data"]["quay"]["estimatedCalls"]
+    expectedDepartureTimes = map(lambda x: (
+        parse_iso8601(x["expectedDepartureTime"]),
+        any(map(lambda y: y == "incident", x))
+    ), estimatedCalls)
     return list(expectedDepartureTimes)

@@ -10,6 +10,7 @@ import display
 import entur
 import config
 import wifi
+import machine
 
 gc.collect()
 
@@ -46,14 +47,16 @@ async def action_departure():
     # Get first next one
     now_seconds = clock.gettime()
     filtered_departures = filter(lambda x: (
-        time.mktime(x + (0, 0)) -
+        time.mktime(x[0] + (0, 0)) -
         now_seconds > config.get("departure_threshold")
     ), departure)
     next_departure = next(filtered_departures)
 
     # Display the time till departure
-    diff = time.mktime(next_departure + (0, 0)) - clock.gettime()
+    diff = time.mktime(next_departure[0] + (0, 0)) - clock.gettime()
     next_departure_text = seconds_to_text_45(diff)
+    if next_departure[1] is True:
+        next_departure_text += "!"
     if __debug__:
         log.debug("next: {}".format(next_departure_text))
     display.text(next_departure_text)
@@ -90,16 +93,22 @@ async def main():
         "departure": action_departure,
     }
     state = "checkready"
+    exCount = 0
     while True:
         gc.collect()
-        log.info("state -> {}".format(state))
-        log.info('free: {} allocated: {}'.format(
-            gc.mem_free(), gc.mem_alloc()))  # pylint: disable=no-member
-        m.mem_info()
+        if __debug__:
+            log.debug("state -> {}".format(state))
+            log.debug('free: {} allocated: {}'.format(
+                gc.mem_free(), gc.mem_alloc()))  # pylint: disable=no-member
+            m.mem_info()
 
         try:
             state = await STATES[state]()
         except Exception as e:
+            exCount += 1
+            if exCount > 5:
+                machine.reset()
+            display.text("err")
             log.error("failed on state({}) ".format(state))
             sys.print_exception(e)  # pylint: disable=no-member
             await asyncio.sleep_ms(10000)  # pylint: disable=no-member
@@ -116,13 +125,3 @@ def async_main():
 
     loop.run_forever()
     loop.close()
-
-
-if __name__ == "__main__":
-    pass
-    # main()
-    # async_main()
-
-    gc.collect()
-    m.mem_info(1)
-    m.mem_info()
