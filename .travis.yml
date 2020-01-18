@@ -25,7 +25,7 @@ jobs:
     - stage: test
       env: NAME="esp8266 port build"
       install:
-        - gir clone https://github.com/micropython/micropython.git
+        - git clone https://github.com/micropython/micropython.git
         - wget https://github.com/jepler/esp-open-sdk/releases/download/2018-06-10/xtensa-lx106-elf-standalone.tar.gz
         - zcat xtensa-lx106-elf-standalone.tar.gz | tar x
         - export PATH=$(pwd)/xtensa-lx106-elf/bin:$PATH
