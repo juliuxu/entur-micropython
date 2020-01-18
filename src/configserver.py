@@ -3,6 +3,7 @@ import log
 import uasyncio as asyncio
 import ujson
 import config
+import wifi
 
 
 async def parse_request(reader, include_headers=True):
@@ -58,7 +59,15 @@ async def handle_set_config(body, writer):
 async def handle_get_info(writer):
     await writer.awrite("HTTP/1.0 200 OK\r\n")
     await writer.awrite("content-type: application/json\r\n\r\n")
-    # TODO
+
+    info = {
+        "wifi_ip": wifi.get_wifi_ip(),
+        "wifi_status": wifi.get_wifi_status(),
+        "wifi_access_points": wifi.get_access_points(),
+        "ap_ip": wifi.get_ap_ip(),
+        "ap_essid": wifi.get_ap_essid()
+    }
+    await writer.awrite(ujson.dumps(info))
 
 
 async def handle_reboot(writer):
