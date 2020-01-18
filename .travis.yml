@@ -18,19 +18,14 @@ jobs:
   - stage: test
     env: NAME="esp8266 port build"
     install:
-    - git clone https://github.com/micropython/micropython.git
-    - wget https://github.com/jepler/esp-open-sdk/releases/download/2018-06-10/xtensa-lx106-elf-standalone.tar.gz
-    - zcat xtensa-lx106-elf-standalone.tar.gz | tar x
-    - export PATH=$(pwd)/xtensa-lx106-elf/bin:$PATH
+    - make install
     script:
-    - make ${MAKEOPTS} -C micropython/mpy-cross
-    - make ${MAKEOPTS} -C micropython/ports/esp8266 submodules
-    - make ${MAKEOPTS} -C micropython/ports/esp8266
+    - make compile
 deploy:
   provider: releases
   draft: true
   api_key:
     secure: ka471/LLvRzF0yu7fKAU+Q8kS33Uxs2WrsdXQyY52nfbB5a1zKsQi53VRjDYrCHjVbNhg63ale3cUi5JUlFgeU6jENd93NpM1pN+Q88EkMk6xs1ticPKxuqyT4RULbqgYF9phVZj40Lz3Rh7/JfKND0hMC0/4SZjH8VZcyevvKPgNR/t3pXAUOP3LhBBEu407uU2+I7mR3++uyTwfYLDpV8NsMNXXniM4y/2SBvxnl/avaXuLHA9FV4u2Y+EIKh3N3ACqSb8G/HyUMts8m0fEKrvRZQxO0sWMzQ7Xy1XcK1GsDoJ9GS4VdpGBuXEXKnD73JuBfLSRFwPCRW1itdKd4baCXmYLHCLLoYfexgOy1e5K1V6OFr2CBonFMXzfjjzA00YCmtt6hjx0FZA9pH87ztlDmbkoETKJbjSqsSkzOTXDZA+Od6cdhJBKPn87X37ASztpyfA4fofMF0LfcIKEq8RNo2uYsxejQcmzYz+tdZXMyIVppSrzRRdT0BlAmSGVTuDR/0MGyol3sCriDrTP1/1Ey0DMi9EuWbyW+eSKWS132lgAhq5pBl0V04vgUr6qOCO5P0HgKnICGzitsP7sD4Av1KJEjtDabzodS9qwqJWDBqoC8h9m0hlKSMWH4ItGEFsolNLfYhwXdXkmEcfaMFpVUWYr2B5OaeLCfS9Xqc=
-  file: micropython/ports/esp8266/build-GENERIC/firmware-combined.bin
+  file: build/micropython/ports/esp8266/build-GENERIC/firmware-combined.bin
   on:
     repo: juliuxu/entur-micropython

@@ -1,10 +1,10 @@
 .PHONY: install compile all clean
 
-SHELL := /bin/bash
 BUILD_DIR = ./build
-TOPDIR = $(shell pwd)
-export PATH := $(TOPDIR)/$(BUILD_DIR)/xtensa-lx106-elf/bin:$(PATH)
-export FROZEN_MANIFEST = $(TOPDIR)/package/manifest.py
+TOP_DIR = $(shell pwd)
+export PATH := $(TOP_DIR)/$(BUILD_DIR)/xtensa-lx106-elf/bin:$(PATH)
+export FROZEN_MANIFEST = $(TOP_DIR)/package/manifest_release.py
+export CODE_SRC_DIR = $(TOP_DIR)/src
 
 MAKEOPTS = "-j4"
 
