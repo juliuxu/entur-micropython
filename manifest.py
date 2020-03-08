@@ -3,7 +3,7 @@ freeze('$(PORT_DIR)/modules')
 # entur-micropython libs
 freeze('$(PORT_DIR)/../../../../src', 'clock.py')
 freeze('$(PORT_DIR)/../../../../src', 'config.py')
-freeze('$(PORT_DIR)/../../../../src', 'configserver.py')
+# freeze('$(PORT_DIR)/../../../../src', 'configserver.py')
 freeze('$(PORT_DIR)/../../../../src', 'display.py')
 freeze('$(PORT_DIR)/../../../../src', 'entur.py')
 freeze('$(PORT_DIR)/../../../../src', 'log.py')

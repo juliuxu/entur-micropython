@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Sync code
-rsync -rtP . julian@192.168.1.85:code/entur-micropython/ ;and
+rsync -rtP . julian@192.168.1.85:code/entur-micropython/
 
 # Compile firmware
-ssh julian@192.168.1.85 "make -C code/entur-micropython/" ;and
+ssh julian@192.168.1.85 "make -C code/entur-micropython/"
 
 # Fetch
 scp julian@192.168.1.85:code/entur-micropython/build/micropython/ports/esp8266/build-GENERIC/firmware-combined.bin .

@@ -29,9 +29,9 @@ async def parse_request(reader, include_headers=True):
     }
 
 
-async def handle_index(writer):
-    log.info("handle_index")
-    with open("web.html", "rb") as f:
+async def handle_static(path, writer):
+    log.info("handle_static")
+    with open("web/{}".format(path), "rb") as f:
         await writer.awrite("HTTP/1.0 200 OK\r\n\r\n")
         await writer.awriteiter(f)
 
@@ -83,8 +83,17 @@ async def handle_request(reader, writer):
     request_obj = await parse_request(reader, include_headers=["content-length"])
     gc.collect()
 
+    # STATIC
     if request_obj["path"] == "/":
-        await handle_index(writer)
+        await handle_static("index.html", writer)
+    elif request_obj["path"] == "/bundle.js":
+        await handle_static("bundle.js", writer)
+    elif request_obj["path"] == "/bundle.css":
+        await handle_static("bundle.css", writer)
+    elif request_obj["path"] == "/favicon.png":
+        await handle_static("favicon.png", writer)
+
+    # API
     elif request_obj["method"] == "GET" and request_obj["path"] == "/config":
         await handle_get_config(writer)
     elif request_obj["method"] == "PUT" and request_obj["path"] == "/config":
