@@ -118,10 +118,10 @@ async def main():
 def async_main():
     loop = asyncio.get_event_loop()  # pylint: disable=no-member
 
-    loop.call_soon(asyncio.start_server(  # pylint: disable=no-member
+    loop.create_task(asyncio.start_server(  # pylint: disable=no-member
         configserver.handle_request, "0.0.0.0", 80))
 
-    loop.call_soon(main())
+    loop.create_task(main())
 
     loop.run_forever()
     loop.close()

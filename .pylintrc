@@ -1,6 +1,6 @@
 [MASTER]
-# Loaded Stubs:  esp8266-micropython-1.10.0 
-init-hook='import sys;sys.path.insert(1, ".micropy/BradenM-micropy-stubs-501c3fe/frozen");sys.path.insert(1, ".micropy/BradenM-micropy-stubs-dcb5d8b/frozen");sys.path.insert(1, ".micropy/BradenM-micropy-stubs-501c3fe/stubs");sys.path.insert(1, ".micropy/entur-micropython");'
+# Loaded Stubs: 
+init-hook='import sys;sys.path[1:1]=["src/lib",".micropy/BradenM-micropy-stubs-70f5531/frozen", ".micropy/BradenM-micropy-stubs-dcb5d8b/frozen", ".micropy/BradenM-micropy-stubs-70f5531/stubs", ".micropy/entur-micropython",  ]'
 
 [MESSAGES CONTROL]
 # Only show warnings with the listed confidence levels. Leave empty to show
