@@ -83,10 +83,15 @@ async def action_checkready():
         await display.scroll_text("quay not configured")
         return "checkready"
 
+    log.info("device is ready")
+
     return "time"
 
+def sync_garbage_collect():
+    gc.collect()
+    gc.threshold(gc.mem_free() // 4 + gc.mem_alloc()) # pylint: disable=no-member
 
-async def main():
+async def main_state_machine():
     STATES = {
         "checkready": action_checkready,
         "time": action_time,
@@ -95,11 +100,11 @@ async def main():
     state = "checkready"
     exCount = 0
     while True:
-        gc.collect()
+        sync_garbage_collect()
         if __debug__:
             log.debug("state -> {}".format(state))
             log.debug('free: {} allocated: {}'.format(
-                gc.mem_free(), gc.mem_alloc()))  # pylint: disable=no-member
+                gc.mem_free(), gc.mem_alloc())) # pylint: disable=no-member
             m.mem_info()
 
         try:
@@ -111,17 +116,17 @@ async def main():
             display.text("err")
             log.error("failed on state({}) ".format(state))
             sys.print_exception(e)  # pylint: disable=no-member
-            await asyncio.sleep_ms(10000)  # pylint: disable=no-member
-        await asyncio.sleep_ms(config.get("toggle_delay"))  # pylint: disable=no-member
+            await asyncio.sleep_ms(10000)
+        await asyncio.sleep_ms(config.get("toggle_delay"))
 
 
 def async_main():
-    loop = asyncio.get_event_loop()  # pylint: disable=no-member
+    loop = asyncio.get_event_loop()
 
-    loop.create_task(asyncio.start_server(  # pylint: disable=no-member
-        configserver.handle_request, "0.0.0.0", 80))
+    loop.create_task(asyncio.start_server(
+        configserver.handle_request, "0.0.0.0", 80, 1))
 
-    loop.create_task(main())
+    loop.create_task(main_state_machine())
 
     loop.run_forever()
     loop.close()

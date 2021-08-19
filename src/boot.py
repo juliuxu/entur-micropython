@@ -22,7 +22,7 @@ def boot():
     log.info("trying to connect to wifi")
     for _ in range(25):
         if wifi.isconnected():
-            log.success("connected to wifi")
+            log.success("connected to wifi {}".format(wifi.get_wifi_ip()))
             break
         machine.sleep(200)
     else:
@@ -30,8 +30,8 @@ def boot():
         return
 
     # pylint: disable=no-member
-    asyncio.get_event_loop().run_until_complete(
-        display.scroll_text("{}".format(wifi.get_wifi_ip())))
+    #asyncio.get_event_loop().run_until_complete(
+    #    display.scroll_text("{}".format(wifi.get_wifi_ip())))
     machine.sleep(500)
 
     # Set time

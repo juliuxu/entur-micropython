@@ -28,12 +28,15 @@ async def parse_request(reader, include_headers=True):
         "headers": headers
     }
 
+async def awriteiter(writer, f):
+    for buf in f:
+        await writer.awrite(buf)
 
 async def handle_static(path, writer):
     log.info("handle_static")
     with open("web/{}".format(path), "rb") as f:
         await writer.awrite("HTTP/1.0 200 OK\r\n\r\n")
-        await writer.awriteiter(f)
+        await awriteiter(writer, f)
 
 
 async def handle_get_config(writer):
@@ -41,7 +44,7 @@ async def handle_get_config(writer):
     with open("config.json", "rb") as f:
         await writer.awrite("HTTP/1.0 200 OK\r\n")
         await writer.awrite("content-type: application/json; charset=utf-8\r\n\r\n")
-        await writer.awriteiter(f)
+        await awriteiter(writer, f)
 
 
 async def handle_set_config(body, writer):
@@ -81,8 +84,9 @@ async def handle_reboot(writer):
 
 async def handle_request(reader, writer):
     request_obj = await parse_request(reader, include_headers=["content-length"])
-    gc.collect()
-
+    
+    log.info("handle_request {}".format(request_obj["path"]))
+    
     # STATIC
     if request_obj["path"] == "/":
         await handle_static("index.html", writer)
@@ -104,4 +108,4 @@ async def handle_request(reader, writer):
         await handle_get_info(writer)
     else:
         await writer.awrite("HTTP/1.0 404 Not Found\r\n\r\n404 Not Found")
-    await writer.aclose()
+    await writer.wait_closed()
