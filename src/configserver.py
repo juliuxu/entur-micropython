@@ -90,12 +90,14 @@ async def handle_request(reader, writer):
     # STATIC
     if request_obj["path"] == "/":
         await handle_static("index.html", writer)
-    elif request_obj["path"] == "/bundle.js":
-        await handle_static("bundle.js", writer)
-    elif request_obj["path"] == "/bundle.css":
-        await handle_static("bundle.css", writer)
-    elif request_obj["path"] == "/favicon.png":
-        await handle_static("favicon.png", writer)
+    elif request_obj["path"] == "/global.css":
+        await handle_static("/global.css", writer)
+    elif request_obj["path"] == "/build/bundle.js":
+        await handle_static("/build/bundle.js", writer)
+    elif request_obj["path"] == "/build/bundle.css":
+        await handle_static("/build/bundle.css", writer)
+    elif request_obj["path"] == "/build/favicon.png":
+        await handle_static("/build/favicon.png", writer)
 
     # API
     elif request_obj["method"] == "GET" and request_obj["path"] == "/config":

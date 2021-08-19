@@ -25,8 +25,14 @@ https://docs.micropython.org/en/latest/esp32/tutorial/intro.html
 https://randomnerdtutorials.com/flashing-micropython-firmware-esptool-py-esp32-esp8266/
 
 `pip3 install esptool`
+
+ESP8266
 `esptool.py --chip esp8266 --port /dev/cu.SLAB_USBtoUART erase_flash`
 `esptool.py --chip esp8266 --port /dev/cu.SLAB_USBtoUART --baud 460800 write_flash --flash_size=detect 0 esp8266-20210618-v1.16.bin`
+
+ESP32
+`esptool.py --chip esp32 --port /dev/cu.SLAB_USBtoUART erase_flash`
+`esptool.py --chip esp32 --port /dev/cu.SLAB_USBtoUART write_flash -z 0x1000 esp32-20210623-v1.16.bin`
 
 ## Connect display
 
